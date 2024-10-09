@@ -1,13 +1,18 @@
 import { analysisAPI } from "../config";
-import AnalysisOutput from "../models/AnalysisOutput";
+import CodeReview from "../models/CodeReview";
 
 class AnalysisService {
-  public async getAnalysisOutput(owner: string, repo: string, pull_number: number): Promise<AnalysisOutput> {
+  public async getAnalysisOutput(owner: string, repo: string, pull_number: number): Promise<CodeReview> {
     const analysis = await fetch(
-      `${analysisAPI}/analysis?owner=${owner}&repo=${repo}&pull_number=${pull_number}`
+      `${analysisAPI}/codeReview?owner=${owner}&repo=${repo}&pull_number=${pull_number}`
     )
-      .then((response) => response.json())
-      .then((data) => new AnalysisOutput(data))
+      .then((response) => {        
+        return response.json();
+      })
+      .then((data) => {
+        const cdata = new CodeReview(data)       
+        return cdata
+      })
       .catch((error) => console.error(error));
 
     if (!analysis) throw new Error("Analysis not found");
